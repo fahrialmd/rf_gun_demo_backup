@@ -1,59 +1,52 @@
 sap.ui.define(
-  ['sap/ui/core/mvc/Controller', 'sap/m/MessageToast', 'sap/m/SelectDialog'],
-  (Controller, MessageToast, SelectDialog) => {
+  [
+    'sap/ui/core/mvc/Controller',
+    'sap/m/MessageToast',
+    'sap/m/SelectDialog',
+    'sap/m/StandardListItem',
+  ],
+  (Controller, MessageToast, SelectDialog, StandardListItem) => {
     'use strict';
 
     return Controller.extend('rfgundemo.controller.View1', {
       onInit() {
-        this._currentFocusedField = null;
-
-        // Add event delegate to handle keyup events
-        // This ensures the keyup event is handled after the view is rendered
-        this.getView().addEventDelegate({
-          onAfterRendering: () => {
-            // Attach delegates to track focused input
-            this.byId('plantInput').addEventDelegate({
-              onfocusin: () => {
-                this._currentFocusedField = 'plantInput';
-              },
-            });
-
-            this.byId('warehouseTypeInput').addEventDelegate({
-              onfocusin: () => {
-                this._currentFocusedField = 'warehouseTypeInput';
-              },
-            });
-            // Attach keyup event to the view
-            this.getView().$().on('keydown', this.handleKeyDown.bind(this));
-          },
-        });
+        this._attachInputEventDelegates();
       },
 
-      handleKeyDown: function (oEvent) {
-        if (oEvent.which === 118 || oEvent.key === 'F7') {
-          this._showContextHelp();
-        } else if (oEvent.which === 13 || oEvent.key === 'Enter') {
-          MessageToast.show('Enter pressed by user!');
+      _attachInputEventDelegates: function () {
+        const oPlantInput = this.byId('plantInput');
+        const oWarehouseInput = this.byId('warehouseTypeInput');
+
+        if (oPlantInput) {
+          oPlantInput.addEventDelegate({
+            onkeydown: oEvent => {
+              if (oEvent.key === 'F7') {
+                this.onPlantValueHelp();
+              } else if (oEvent.key === 'Enter') {
+                MessageToast.show('Enter pressed in Plant field');
+              }
+            },
+          });
+        }
+
+        if (oWarehouseInput) {
+          oWarehouseInput.addEventDelegate({
+            onkeydown: oEvent => {
+              if (oEvent.key === 'F7') {
+                this.onWarehouseTypeValueHelp();
+              } else if (oEvent.key === 'Enter') {
+                MessageToast.show('Enter pressed in Warehouse Type field');
+              }
+            },
+          });
         }
       },
 
-      _showContextHelp: function () {
-        console.log('F7 Press:', this._currentFocusedField);
-        if (this._currentFocusedField === 'plantInput') {
-          this.onPlantValueHelp();
-        } else if (this._currentFocusedField === 'warehouseTypeInput') {
-          this.onWarehouseTypeValueHelp();
-        } else {
-          MessageToast.show('Please select a field first');
-        }
-      },
-
-      onPlantValueHelp: function (oEvent) {
+      onPlantValueHelp: function () {
         this._openPlantSelectDialog();
       },
 
-      // Value help handler for Warehouse Type input
-      onWarehouseTypeValueHelp: function (oEvent) {
+      onWarehouseTypeValueHelp: function () {
         this._openWarehouseTypeSelectDialog();
       },
 
@@ -64,7 +57,7 @@ sap.ui.define(
             title: 'Select Plant',
             items: {
               path: '/ZC_EWM_PLANT',
-              template: new sap.m.StandardListItem({
+              template: new StandardListItem({
                 title: '{Plant}',
                 description: '{PlantName}',
               }),
@@ -79,6 +72,7 @@ sap.ui.define(
             },
           });
         }
+
         this.getView().addDependent(this._oSelectPlantDialog);
         this._oSelectPlantDialog.open();
       },
@@ -90,7 +84,7 @@ sap.ui.define(
             title: 'Select Warehouse Type',
             items: {
               path: '/ZC_EWM_WAREHOUSE_TYPE',
-              template: new sap.m.StandardListItem({
+              template: new StandardListItem({
                 title: '{warehouse_type}',
                 description: '{warehouse_type}',
               }),
@@ -107,6 +101,7 @@ sap.ui.define(
             },
           });
         }
+
         this.getView().addDependent(this._oSelectWarehouseTypeSelectDialog);
         this._oSelectWarehouseTypeSelectDialog.open();
       },
