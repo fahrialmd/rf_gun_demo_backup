@@ -1,9 +1,9 @@
 sap.ui.define(
-  ["sap/ui/core/mvc/Controller", "sap/m/MessageToast", "sap/m/SelectDialog"],
+  ['sap/ui/core/mvc/Controller', 'sap/m/MessageToast', 'sap/m/SelectDialog'],
   (Controller, MessageToast, SelectDialog) => {
-    "use strict";
+    'use strict';
 
-    return Controller.extend("rfgundemo.controller.View1", {
+    return Controller.extend('rfgundemo.controller.View1', {
       onInit() {
         this._currentFocusedField = null;
 
@@ -12,37 +12,39 @@ sap.ui.define(
         this.getView().addEventDelegate({
           onAfterRendering: () => {
             // Attach delegates to track focused input
-            this.byId("plantInput").addEventDelegate({
+            this.byId('plantInput').addEventDelegate({
               onfocusin: () => {
-                this._currentFocusedField = "plantInput";
+                this._currentFocusedField = 'plantInput';
               },
             });
 
-            this.byId("warehouseTypeInput").addEventDelegate({
+            this.byId('warehouseTypeInput').addEventDelegate({
               onfocusin: () => {
-                this._currentFocusedField = "warehouseTypeInput";
+                this._currentFocusedField = 'warehouseTypeInput';
               },
             });
             // Attach keyup event to the view
-            this.getView().$().on("keydown", this.handleKeyDown.bind(this));
+            this.getView().$().on('keydown', this.handleKeyDown.bind(this));
           },
         });
       },
 
       handleKeyDown: function (oEvent) {
-        if (oEvent.which === 118 || oEvent.key === "F7") {
+        if (oEvent.which === 118 || oEvent.key === 'F7') {
           this._showContextHelp();
+        } else if (oEvent.which === 13 || oEvent.key === 'Enter') {
+          MessageToast.show('Enter pressed by user!');
         }
       },
 
       _showContextHelp: function () {
-        console.log("F7 Press:", this._currentFocusedField);
-        if (this._currentFocusedField === "plantInput") {
+        console.log('F7 Press:', this._currentFocusedField);
+        if (this._currentFocusedField === 'plantInput') {
           this.onPlantValueHelp();
-        } else if (this._currentFocusedField === "warehouseTypeInput") {
+        } else if (this._currentFocusedField === 'warehouseTypeInput') {
           this.onWarehouseTypeValueHelp();
         } else {
-          MessageToast.show("Please select a field first");
+          MessageToast.show('Please select a field first');
         }
       },
 
@@ -58,18 +60,21 @@ sap.ui.define(
       _openPlantSelectDialog: function () {
         if (!this._oSelectPlantDialog) {
           this._oSelectPlantDialog = new SelectDialog({
-            noDataText: "No plants available",
-            title: "Select Plant",
-            items: [
-              new sap.m.StandardListItem({ title: "1310" }),
-              new sap.m.StandardListItem({ title: "1710" }),
-            ],
-            confirm: (oEvent) => {
-              const oSelectedItem = oEvent.getParameter("selectedItem");
+            noDataText: 'No plants available',
+            title: 'Select Plant',
+            items: {
+              path: '/ZC_EWM_PLANT',
+              template: new sap.m.StandardListItem({
+                title: '{Plant}',
+                description: '{PlantName}',
+              }),
+            },
+            confirm: oEvent => {
+              const oSelectedItem = oEvent.getParameter('selectedItem');
               if (oSelectedItem) {
-                this.byId("plantInput").setValue(oSelectedItem.getTitle());
+                this.byId('plantInput').setValue(oSelectedItem.getTitle());
               } else {
-                MessageToast.show("No plant selected");
+                MessageToast.show('No plant selected');
               }
             },
           });
@@ -81,20 +86,23 @@ sap.ui.define(
       _openWarehouseTypeSelectDialog: function () {
         if (!this._oSelectWarehouseTypeSelectDialog) {
           this._oSelectWarehouseTypeSelectDialog = new SelectDialog({
-            noDataText: "No warehouse type available",
-            title: "Select Warehouse Type",
-            items: [
-              new sap.m.StandardListItem({ title: "WM" }),
-              new sap.m.StandardListItem({ title: "IM" }),
-            ],
-            confirm: (oEvent) => {
-              const oSelectedItem = oEvent.getParameter("selectedItem");
+            noDataText: 'No warehouse type available',
+            title: 'Select Warehouse Type',
+            items: {
+              path: '/ZC_EWM_WAREHOUSE_TYPE',
+              template: new sap.m.StandardListItem({
+                title: '{warehouse_type}',
+                description: '{warehouse_type}',
+              }),
+            },
+            confirm: oEvent => {
+              const oSelectedItem = oEvent.getParameter('selectedItem');
               if (oSelectedItem) {
-                this.byId("warehouseTypeInput").setValue(
+                this.byId('warehouseTypeInput').setValue(
                   oSelectedItem.getTitle()
                 );
               } else {
-                MessageToast.show("No warehouse type selected");
+                MessageToast.show('No warehouse type selected');
               }
             },
           });
