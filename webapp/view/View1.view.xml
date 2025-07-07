@@ -1,6 +1,52 @@
-<mvc:View controllerName="rfgundemo.controller.View1"
+<mvc:View
+    controllerName="rfgundemo.controller.View1"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Page
+        id="page"
+        title="{i18n>title}"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Label
+                    text="Plant"
+                    labelFor="plantInput"
+                />
+                <Input
+                    id="plantInput"
+                    placeholder="Enter Plant"
+                    required="true"
+                    showValueHelp="true"
+                    valueHelpRequest=".onPlantValueHelp"
+                />
+
+                <Label
+                    text="Warehouse Type"
+                    labelFor="warehouseTypeInput"
+                />
+                <Input
+                    id="warehouseTypeInput"
+                    placeholder="Enter Warehouse Type"
+                    required="true"
+                    showValueHelp="true"
+                    valueHelpRequest=".onWarehouseTypeValueHelp"
+                />
+            </VBox>
+        </content>
+        <footer>
+            <Toolbar design="Solid">
+                <ToolbarSpacer />
+                <Text text="F1=Logout" />
+                <ToolbarSpacer />
+                <Text text="F2=Reset" />
+                <ToolbarSpacer />
+                <Text text="F3=Back" />
+                <ToolbarSpacer />
+                <Text text="F7=Help" />
+                <ToolbarSpacer />
+            </Toolbar>
+        </footer>
     </Page>
 </mvc:View>
