@@ -65,6 +65,42 @@
                     showValueStateMessage="false"
                 />
 
+                <Label
+                    text="Plant (for Posting)"
+                    labelFor="plantPost"
+                />
+                <Input
+                    id="plantPost"
+                    placeholder="Plant"
+                    required="true"
+                    showValueHelp="true"
+                    valueHelpRequest=".onPlantValueHelp"
+                    liveChange=".onInputLiveChange"
+                    submit=".onPlantSubmit"
+                    showValueStateMessage="false"
+                />
+
+                <Label
+                    text="Warehouse Type (for Posting)"
+                    labelFor="warehouseTypePost"
+                />
+                <Input
+                    id="warehouseTypePost"
+                    placeholder="Warehouse Type"
+                    required="true"
+                    showValueHelp="true"
+                    valueHelpRequest=".onWarehouseTypeValueHelp"
+                    liveChange=".onInputLiveChange"
+                    submit=".onWarehouseTypeSubmit"
+                    showValueStateMessage="false"
+                />
+
+                <Button
+                    type="Emphasized"
+                    text="Post"
+                    press=".onPostDataToBackend"
+                />
+
                 <Label text="Picture" />
                 <Button
                     icon="sap-icon://camera"

@@ -256,10 +256,10 @@ sap.ui.define(
             noDataText: "No plants available",
             title: "Select Plant",
             items: {
-              path: "/ZC_EWM_PLANT",
+              path: "/ZC_EWM_RF_GUN",
               template: new StandardListItem({
-                title: "{Plant}",
-                description: "{PlantName}",
+                title: "{scan_hu}",
+                description: "{site}",
               }),
             },
             confirm: (oEvent) => {
@@ -308,6 +308,40 @@ sap.ui.define(
 
         this.getView().addDependent(this._oSelectWarehouseTypeSelectDialog);
         this._oSelectWarehouseTypeSelectDialog.open();
+      },
+
+      onPostDataToBackend: function () {
+        const oModel = this.getView().getModel();
+        const oInputPlant = this.byId("plantPost");
+        const oWarehouseType = this.byId("warehouseTypePost");
+        const sInputPlantValue = oInputPlant.getValue();
+        const sWarehouseTypeValue = oWarehouseType.getValue();
+
+        console.log("oModel:", oModel);
+        console.log(
+          "Input Plant Value:",
+          sInputPlantValue,
+          "Warehouse Type Value:",
+          sWarehouseTypeValue
+        );
+        const body = {
+          scan_hu: sInputPlantValue,
+          site: sWarehouseTypeValue,
+        };
+
+        const oModelBinding = oModel.bindList("/ZC_EWM_RF_GUN");
+        oModelBinding
+          .create(body)
+          .created()
+          .then(() => {
+            MessageToast.show("Data posted successfully");
+            oInputPlant.setValue("");
+            oWarehouseType.setValue("");
+          })
+          .catch((oError) => {
+            console.error("Error posting data:", oError);
+            MessageToast.show("Error posting data: " + oError.message);
+          });
       },
     });
   }
