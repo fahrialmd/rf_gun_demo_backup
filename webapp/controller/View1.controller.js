@@ -53,7 +53,7 @@ sap.ui.define(
 
       onInputLiveChange: function (oEvent) {
         const oInput = oEvent.getSource();
-        this._validateInput(oInput);
+        // this._validateInput(oInput);
       },
 
       onPlantSubmit: function (oEvent) {
@@ -65,13 +65,6 @@ sap.ui.define(
           setTimeout(() => {
             oSelect.focus();
           }, 0);
-
-          MessageToast.show(
-            "Warehouse type submitted: " +
-              this.byId("warehouseTypeInput").getValue()
-          );
-        } else {
-          MessageToast.show("Please correct the required fields.");
         }
         // const oInput = oEvent.getSource();
         // this._validateInput(oInput);
@@ -91,13 +84,6 @@ sap.ui.define(
           setTimeout(() => {
             oSelect.focus();
           }, 0);
-
-          MessageToast.show(
-            "Warehouse type submitted: " +
-              this.byId("warehouseTypeInput").getValue()
-          );
-        } else {
-          MessageToast.show("Please correct the required fields.");
         }
       },
 
@@ -120,18 +106,31 @@ sap.ui.define(
           this.byId("warehouseTypeInput"),
         ];
         let bAllValid = true;
+        let sMessages = "";
 
         aInputs.forEach((oInput) => {
           const sValue = oInput.getValue();
           if (sValue.length === 0) {
             oInput.setValueState("Error");
-            oInput.setValueStateText("This field cannot be empty!");
+            sMessages += `${oInput.getPlaceholder()} is required. `;
             bAllValid = false;
-            oInput.focus();
+            setTimeout(() => {
+              oInput.focus();
+            }, 0);
           } else {
             oInput.setValueState("None");
           }
         });
+
+        const oMessageStrip = this.byId("validationMessageStrip");
+        if (!bAllValid) {
+          oMessageStrip.setText(sMessages);
+          oMessageStrip.setType("Error");
+          oMessageStrip.setVisible(true);
+          aInputs[0].focus();
+        } else {
+          oMessageStrip.setVisible(false);
+        }
 
         return bAllValid;
       },

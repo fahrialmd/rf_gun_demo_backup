@@ -11,6 +11,13 @@
         class="sapUiResponsiveContentPadding"
     >
         <content>
+            <MessageStrip
+                id="validationMessageStrip"
+                showCloseButton="true"
+                showIcon="true"
+                type="Information"
+                visible="false"
+            />
             <f:SimpleForm
                 id="responsiveForm"
                 editable="true"
@@ -34,12 +41,13 @@
                 />
                 <Input
                     id="plantInput"
-                    placeholder="Enter Plant"
+                    placeholder="Plant"
                     required="true"
                     showValueHelp="true"
                     valueHelpRequest=".onPlantValueHelp"
                     liveChange=".onInputLiveChange"
                     submit=".onPlantSubmit"
+                    showValueStateMessage="false"
                 />
 
                 <Label
@@ -48,12 +56,13 @@
                 />
                 <Input
                     id="warehouseTypeInput"
-                    placeholder="Enter Warehouse Type"
+                    placeholder="Warehouse Type"
                     required="true"
                     showValueHelp="true"
                     valueHelpRequest=".onWarehouseTypeValueHelp"
                     liveChange=".onInputLiveChange"
                     submit=".onWarehouseTypeSubmit"
+                    showValueStateMessage="false"
                 />
                 <Label
                     text="Counting Method"
@@ -82,7 +91,7 @@
         </content>
 
         <footer>
-            <Toolbar>
+            <Toolbar visible="{device>/system/phone}">
                 <ToolbarSpacer />
                 <Text text="F1=Logout" />
                 <ToolbarSpacer />

@@ -1,1 +1,10 @@
 /* Enter your custom styles here */
+/* Hide the default ValueStateText for input elements */
+.sapMInputBaseError .sapMValueStateMessage {
+  display: none !important;
+}
+
+/* Hide message pop-up if appears on focus */
+.sapMValueStateMessage .sapMValueStateMessageField {
+  visibility: hidden !important;
+}
