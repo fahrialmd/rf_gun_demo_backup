@@ -24,10 +24,10 @@ sap.ui.define(
         this._attachInputEventDelegates();
 
         // Initialize a JSON model to handle image data
-        const oModel = new JSONModel({
+        const oImageModel = new JSONModel({
           capturedImage: "",
         });
-        this.getView().setModel(oModel);
+        this.getView().setModel(oImageModel, "imageData");
       },
 
       _attachInputEventDelegates: function () {
@@ -159,7 +159,7 @@ sap.ui.define(
           const imageDataUrl = canvas.toDataURL("image/png");
 
           // Update the model with the new image data URL
-          const oModel = this.getView().getModel();
+          const oModel = this.getView().getModel("imageData");
           oModel.setProperty("/capturedImage", imageDataUrl);
 
           // Stop the camera and close the dialog

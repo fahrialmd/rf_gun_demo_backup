@@ -81,8 +81,8 @@
                     width="40%"
                     height="auto"
                     alt="Captured Image will be displayed here"
-                    visible="{= !!${/capturedImage}}"
-                    src="{/capturedImage}"
+                    visible="{= !!${imageData>/capturedImage}}"
+                    src="{imageData>/capturedImage}"
                 />
 
                 <Label
