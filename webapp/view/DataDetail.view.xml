@@ -1,0 +1,66 @@
+<mvc:View
+    xmlns:layout="sap.ui.layout"
+    controllerName="rfgundemo.controller.DataDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    displayBlock="true"
+>
+    <Page
+        id="dataDetailPage"
+        title="Data Detail"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <List headerText="Order Details">
+            <CustomListItem>
+                <HBox>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Line No" />
+                        <Input
+                            value="00010"
+                            editable="false"
+                        />
+                    </VBox>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Material" />
+                        <Input
+                            value="mat001"
+                            editable="false"
+                        />
+                    </VBox>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Material Desc" />
+                        <Input
+                            value="mat001 xxx"
+                            editable="false"
+                        />
+                    </VBox>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Quantity Suggest" />
+                        <Input
+                            value="222"
+                            editable="false"
+                        />
+                    </VBox>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Quantity Receive" />
+                        <Input value="222" />
+                    </VBox>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Plant" />
+                        <Input value="1000" />
+                    </VBox>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Storage Location" />
+                        <Input value="1101" />
+                    </VBox>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Confirm Status" />
+                        <Button text="OK" />
+                    </VBox>
+                </HBox>
+            </CustomListItem>
+        </List>
+    </Page>
+</mvc:View>

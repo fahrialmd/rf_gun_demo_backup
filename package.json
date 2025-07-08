@@ -8,13 +8,12 @@
     "sapui5"
   ],
   "main": "webapp/index.html",
-  "dependencies": {},
   "devDependencies": {
-    "@ui5/cli": "^3.0.0",
-    "@sap/ux-ui5-tooling": "1",
-    "eslint": "8.57.0",
     "@sap/eslint-plugin-ui5-jsdocs": "2.0.5",
-    "@sapui5/ts-types": "~1.136.0"
+    "@sap/ux-ui5-tooling": "1",
+    "@sapui5/ts-types": "~1.136.0",
+    "@ui5/cli": "^3.11.9",
+    "eslint": "8.57.0"
   },
   "scripts": {
     "start": "fiori run --open \"test/flp.html#app-preview\"",

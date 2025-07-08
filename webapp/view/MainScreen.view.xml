@@ -1,0 +1,30 @@
+<mvc:View
+    controllerName="rfgundemo.controller.MainScreen"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    displayBlock="true"
+>
+    <Page
+        title="Main Screen"
+        id="mainScreenPage"
+    >
+        <VBox
+            class="sapUiSmallMargin"
+            justifyContent="Center"
+            alignItems="Center"
+            fitContainer="true"
+        >
+            <Label
+                text="Purchase Order (Scan)"
+                labelFor="purchaseOrderNumber"
+            />
+
+            <Input
+                placeholder="Purchase Order"
+                id="purchaseOrderNumber"
+                required="true"
+                submit=".onPurchaseOrderSubmit"
+            />
+        </VBox>
+    </Page>
+</mvc:View>

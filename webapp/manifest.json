@@ -17,7 +17,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata4/sap/zui_ewm_rf_ui/srvd_a2x/sap/zui_ewm_rf_web/0001/",
+        "uri": "/sap/opu/odata4/sap/zzui_rf_po_item/srvd_a2x/sap/zzui_rf_po_item/0001/",
         "type": "OData",
         "settings": {
           "annotations": [],
@@ -94,15 +94,24 @@
       },
       "routes": [
         {
-          "name": "RouteView1",
-          "pattern": ":?query:",
-          "target": ["TargetView1"]
+          "name": "RouteMainScreen",
+          "pattern": "",
+          "target": ["TargetMainScreen"]
+        },
+        {
+          "name": "RouteDataDetail",
+          "pattern": "Detail({purchaseOrderNumber}):?query:",
+          "target": ["TargetDataDetail"]
         }
       ],
       "targets": {
-        "TargetView1": {
-          "id": "View1",
-          "name": "View1"
+        "TargetMainScreen": {
+          "id": "MainScreen",
+          "name": "MainScreen"
+        },
+        "TargetDataDetail": {
+          "id": "DataDetail",
+          "name": "DataDetail"
         }
       }
     },
