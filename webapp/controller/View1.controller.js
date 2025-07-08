@@ -4,13 +4,30 @@ sap.ui.define(
     "sap/m/MessageToast",
     "sap/m/SelectDialog",
     "sap/m/StandardListItem",
+    "sap/m/Dialog",
+    "sap/ui/core/HTML",
+    "sap/ui/model/json/JSONModel",
   ],
-  (Controller, MessageToast, SelectDialog, StandardListItem) => {
+  (
+    Controller,
+    MessageToast,
+    SelectDialog,
+    StandardListItem,
+    Dialog,
+    HTML,
+    JSONModel
+  ) => {
     "use strict";
 
     return Controller.extend("rfgundemo.controller.View1", {
       onInit() {
         this._attachInputEventDelegates();
+
+        // Initialize a JSON model to handle image data
+        const oModel = new JSONModel({
+          capturedImage: "",
+        });
+        this.getView().setModel(oModel);
       },
 
       _attachInputEventDelegates: function () {
@@ -84,6 +101,104 @@ sap.ui.define(
           setTimeout(() => {
             oSelect.focus();
           }, 0);
+        }
+      },
+
+      onCameraPress: function () {
+        if (!this._oCameraDialog) {
+          this._oCameraDialog = new Dialog({
+            title: "Live Camera",
+            content: [
+              new HTML({
+                content:
+                  '<video id="cameraVideo" autoplay playsinline style="width: 100%;"></video>' +
+                  '<canvas id="photoCanvas" style="display:none;"></canvas>',
+              }),
+            ],
+            buttons: [
+              {
+                text: "Capture",
+                press: this._captureImage.bind(this),
+              },
+              {
+                text: "Close",
+                press: () => {
+                  this._stopCamera();
+                  this._oCameraDialog.close();
+                },
+              },
+            ],
+            afterOpen: () => {
+              this._startCamera();
+            },
+          });
+
+          this.getView().addDependent(this._oCameraDialog);
+        }
+        this._oCameraDialog.open();
+      },
+
+      _captureImage: function () {
+        const video = document.getElementById("cameraVideo");
+        const canvas = document.getElementById("photoCanvas");
+
+        if (
+          video instanceof HTMLVideoElement &&
+          canvas instanceof HTMLCanvasElement
+        ) {
+          const context = canvas.getContext("2d");
+
+          // Set the canvas size to match the video
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+
+          // Draw the video frame to the canvas
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          // Convert the canvas to an image data URL
+          const imageDataUrl = canvas.toDataURL("image/png");
+
+          // Update the model with the new image data URL
+          const oModel = this.getView().getModel();
+          oModel.setProperty("/capturedImage", imageDataUrl);
+
+          // Stop the camera and close the dialog
+          this._stopCamera();
+          if (this._oCameraDialog) {
+            this._oCameraDialog.close();
+          }
+        } else {
+          MessageToast.show(
+            "Error capturing image. Video or canvas element not found."
+          );
+        }
+      },
+
+      _startCamera: function () {
+        const video = document.getElementById("cameraVideo");
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then((stream) => {
+              // Cast the video element to HTMLVideoElement
+              if (video instanceof HTMLVideoElement) {
+                video.srcObject = stream;
+              }
+              this._stream = stream; // Save stream for stopping later
+            })
+            .catch((error) => {
+              MessageToast.show("Error accessing camera: " + error.message);
+            });
+        } else {
+          MessageToast.show("Camera access is not supported.");
+        }
+      },
+
+      _stopCamera: function () {
+        if (this._stream) {
+          this._stream.getTracks().forEach((track) => track.stop());
+          this._stream = null;
         }
       },
 

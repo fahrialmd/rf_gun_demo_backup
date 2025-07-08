@@ -64,6 +64,27 @@
                     submit=".onWarehouseTypeSubmit"
                     showValueStateMessage="false"
                 />
+
+                <Label text="Picture" />
+                <Button
+                    icon="sap-icon://camera"
+                    type="Attention"
+                    text="Take a picture!"
+                    press=".onCameraPress"
+                />
+                <Label
+                    text="Image Result"
+                    labelFor="capturedImage"
+                />
+                <Image
+                    id="capturedImage"
+                    width="40%"
+                    height="auto"
+                    alt="Captured Image will be displayed here"
+                    visible="{= !!${/capturedImage}}"
+                    src="{/capturedImage}"
+                />
+
                 <Label
                     text="Counting Method"
                     labelFor="countingMethodSelect"
