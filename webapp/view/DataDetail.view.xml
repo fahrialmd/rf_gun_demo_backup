@@ -16,9 +16,6 @@
         <List
             id="orderList"
             mode="MultiSelect"
-            items="{
-        path: 'purchaseOrder>/items'
-    }"
         >
             <headerToolbar>
                 <Toolbar>
@@ -35,96 +32,6 @@
                     />
                 </Toolbar>
             </headerToolbar>
-
-            <CustomListItem>
-                <HBox>
-                    <VBox class="sapUiSmallMargin">
-                        <Label
-                            text="Line No"
-                            labelFor="purchaseOrderItemNoInput"
-                        />
-                        <Input
-                            id="purchaseOrderItemNoInput"
-                            value="{purchaseOrder>PurchaseOrderItemNo}"
-                            editable="false"
-                        />
-                    </VBox>
-                    <VBox class="sapUiSmallMargin">
-                        <Label
-                            text="Material"
-                            labelFor="materialInput"
-                        />
-                        <Input
-                            id="materialInput"
-                            value="{purchaseOrder>Material}"
-                            editable="false"
-                        />
-                    </VBox>
-                    <VBox class="sapUiSmallMargin">
-                        <Label
-                            text="Material Desc"
-                            labelFor="materialDescriptionInput"
-                        />
-                        <Input
-                            id="materialDescriptionInput"
-                            value="{purchaseOrder>MaterialDescription}"
-                            editable="false"
-                        />
-                    </VBox>
-                    <VBox class="sapUiSmallMargin">
-                        <Label
-                            text="Quantity Suggest"
-                            labelFor="quantitySuggestInput"
-                        />
-                        <Input
-                            id="quantitySuggestInput"
-                            value="{purchaseOrder>QuantitySuggest}"
-                            editable="false"
-                        />
-                    </VBox>
-                    <VBox class="sapUiSmallMargin">
-                        <Label
-                            text="Quantity Receive"
-                            labelFor="quantityReceiveInput"
-                        />
-                        <Input
-                            id="quantityReceiveInput"
-                            value=""
-                        />
-                    </VBox>
-                    <VBox class="sapUiSmallMargin">
-                        <Label
-                            text="Plant"
-                            labelFor="plantInput"
-                        />
-                        <Input
-                            id="plantInput"
-                            value="{purchaseOrder>Plant}"
-                        />
-                    </VBox>
-                    <VBox class="sapUiSmallMargin">
-                        <Label
-                            text="Storage Location"
-                            labelFor="storageLocationInput"
-                        />
-                        <Input
-                            id="storageLocationInput"
-                            value="{purchaseOrder>StorageLocation}"
-                        />
-                    </VBox>
-                    <VBox class="sapUiSmallMargin">
-                        <Label
-                            text="Confirm Status"
-                            labelFor="confirmStatusButton"
-                        />
-                        <Button
-                            id="confirmStatusButton"
-                            text="OK"
-                            width="100%"
-                        />
-                    </VBox>
-                </HBox>
-            </CustomListItem>
         </List>
     </Page>
 </mvc:View>
