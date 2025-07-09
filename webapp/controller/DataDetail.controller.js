@@ -48,7 +48,26 @@ sap.ui.define(
       },
 
       onSaveAndPostButtonPress: function () {
-        MessageToast.show('Unimplemented function');
+        const oList = this.byId('orderList');
+        const aSelectedItems = oList.getSelectedItems();
+        const aSelectedData = [];
+
+        aSelectedItems.forEach(item => {
+          const oItemData = {};
+          const oInputs = item.getContent()[0].getItems();
+
+          oItemData['lineNo'] = oInputs[0].getItems()[1].getValue();
+          oItemData['material'] = oInputs[1].getItems()[1].getValue();
+          oItemData['materialDesc'] = oInputs[2].getItems()[1].getValue();
+          oItemData['quantitySuggest'] = oInputs[3].getItems()[1].getValue();
+          oItemData['quantityReceive'] = oInputs[4].getItems()[1].getValue();
+          oItemData['plant'] = oInputs[5].getItems()[1].getValue();
+          oItemData['storageLocation'] = oInputs[6].getItems()[1].getValue();
+
+          aSelectedData.push(oItemData);
+        });
+
+        console.log('Data from Selected Items:', aSelectedData);
       },
 
       _attachInputEventDelegates: function () {
