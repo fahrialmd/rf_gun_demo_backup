@@ -8,56 +8,120 @@
 >
     <Page
         id="dataDetailPage"
-        title="Data Detail"
+        title="SMR Demo Apps"
         showNavButton="true"
         navButtonPress=".onNavBack"
+        class="sapUiResponsiveContentPadding"
     >
-        <List headerText="Order Details">
+        <List
+            id="orderList"
+            mode="MultiSelect"
+            items="{
+                path: '/ZR_RF_PO_ITEM_MAIN'
+            }"
+        >
+            <headerToolbar>
+                <Toolbar>
+                    <Title
+                        text="{= 'Order Details for ' + ${purchaseOrder>/purchaseOrderNumber} }"
+                    />
+                    <ToolbarSpacer />
+                    <Button
+                        id="saveAndPostButton"
+                        icon="sap-icon://save"
+                        press=".onsaveAndPostButtonPress"
+                        text="Save and Post"
+                        type="Emphasized"
+                    />
+                </Toolbar>
+            </headerToolbar>
+
             <CustomListItem>
                 <HBox>
                     <VBox class="sapUiSmallMargin">
-                        <Label text="Line No" />
+                        <Label
+                            text="Line No"
+                            labelFor="purchaseOrderItemNoInput"
+                        />
                         <Input
-                            value="00010"
+                            id="purchaseOrderItemNoInput"
+                            value="{PurchaseOrderItemNo}"
                             editable="false"
                         />
                     </VBox>
                     <VBox class="sapUiSmallMargin">
-                        <Label text="Material" />
+                        <Label
+                            text="Material"
+                            labelFor="materialInput"
+                        />
                         <Input
-                            value="mat001"
+                            id="materialInput"
+                            value="{Material}"
                             editable="false"
                         />
                     </VBox>
                     <VBox class="sapUiSmallMargin">
-                        <Label text="Material Desc" />
+                        <Label
+                            text="Material Desc"
+                            labelFor="materialDescriptionInput"
+                        />
                         <Input
-                            value="mat001 xxx"
+                            id="materialDescriptionInput"
+                            value="{MaterialDescription}"
                             editable="false"
                         />
                     </VBox>
                     <VBox class="sapUiSmallMargin">
-                        <Label text="Quantity Suggest" />
+                        <Label
+                            text="Quantity Suggest"
+                            labelFor="quantitySuggestInput"
+                        />
                         <Input
-                            value="222"
+                            id="quantitySuggestInput"
+                            value="{QuantitySuggest}"
                             editable="false"
                         />
                     </VBox>
                     <VBox class="sapUiSmallMargin">
-                        <Label text="Quantity Receive" />
-                        <Input value="222" />
+                        <Label
+                            text="Quantity Receive"
+                            labelFor="quantityReceiveInput"
+                        />
+                        <Input
+                            id="quantityReceiveInput"
+                            value=""
+                        />
                     </VBox>
                     <VBox class="sapUiSmallMargin">
-                        <Label text="Plant" />
-                        <Input value="1000" />
+                        <Label
+                            text="Plant"
+                            labelFor="plantInput"
+                        />
+                        <Input
+                            id="plantInput"
+                            value="{Plant}"
+                        />
                     </VBox>
                     <VBox class="sapUiSmallMargin">
-                        <Label text="Storage Location" />
-                        <Input value="1101" />
+                        <Label
+                            text="Storage Location"
+                            labelFor="storageLocationInput"
+                        />
+                        <Input
+                            id="storageLocationInput"
+                            value="{StorageLocation}"
+                        />
                     </VBox>
                     <VBox class="sapUiSmallMargin">
-                        <Label text="Confirm Status" />
-                        <Button text="OK" />
+                        <Label
+                            text="Confirm Status"
+                            labelFor="confirmStatusButton"
+                        />
+                        <Button
+                            id="confirmStatusButton"
+                            text="OK"
+                            width="100%"
+                        />
                     </VBox>
                 </HBox>
             </CustomListItem>

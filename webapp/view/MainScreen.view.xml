@@ -5,7 +5,7 @@
     displayBlock="true"
 >
     <Page
-        title="Main Screen"
+        title="SMR Demo Apps"
         id="mainScreenPage"
     >
         <VBox
