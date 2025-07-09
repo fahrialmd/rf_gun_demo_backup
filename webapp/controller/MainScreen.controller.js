@@ -47,9 +47,9 @@ sap.ui.define(
       },
 
       _attachInputEventDelegates: function () {
-        const oPurchaseOrderInput = this.byId('purchaseOrderNumber');
-        if (oPurchaseOrderInput) {
-          oPurchaseOrderInput.addEventDelegate({
+        const oMainScreenPage = this.byId('mainScreenPage');
+        if (oMainScreenPage) {
+          oMainScreenPage.addEventDelegate({
             onkeydown: oEvent => {
               if (oEvent.key === 'F4') {
                 oEvent.preventDefault();
