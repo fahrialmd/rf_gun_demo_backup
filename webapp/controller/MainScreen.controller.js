@@ -24,6 +24,8 @@ sap.ui.define(
             oModel.refresh();
           }.bind(this)
         );
+
+        this._attachInputEventDelegates();
       },
 
       onPurchaseOrderSubmit: function () {
@@ -41,8 +43,21 @@ sap.ui.define(
         oPurchaseOrderInput.setValueState('None');
         oPurchaseOrderInput.setValueStateText('');
 
-        this.getView().setBusy(true);
         this._checkPurchaseOrder(sPurchaseOrder);
+      },
+
+      _attachInputEventDelegates: function () {
+        const oPurchaseOrderInput = this.byId('purchaseOrderNumber');
+        if (oPurchaseOrderInput) {
+          oPurchaseOrderInput.addEventDelegate({
+            onkeydown: oEvent => {
+              if (oEvent.key === 'F4') {
+                oEvent.preventDefault();
+                this.onPurchaseOrderSubmit();
+              }
+            },
+          });
+        }
       },
 
       _checkPurchaseOrder: function (sPurchaseOrder) {

@@ -31,6 +31,8 @@ sap.ui.define(
             }
           }.bind(this)
         );
+
+        this._attachInputEventDelegates();
       },
 
       onNavBack: function () {
@@ -42,6 +44,27 @@ sap.ui.define(
         } else {
           const oRouter = this.getOwnerComponent().getRouter();
           oRouter.navTo('RouteMainScreen', {}, true);
+        }
+      },
+
+      onSaveAndPostButtonPress: function () {
+        MessageToast.show('Unimplemented function');
+      },
+
+      _attachInputEventDelegates: function () {
+        const oDataDetailPage = this.byId('dataDetailPage');
+        if (oDataDetailPage) {
+          oDataDetailPage.addEventDelegate({
+            onkeydown: oEvent => {
+              if (oEvent.key === 'F3') {
+                oEvent.preventDefault();
+                this.onNavBack();
+              } else if (oEvent.key === 'F8') {
+                oEvent.preventDefault();
+                this.onSaveAndPostButtonPress();
+              }
+            },
+          });
         }
       },
 

@@ -28,11 +28,10 @@
                 filterSuggests="true"
                 startSuggestion="1"
                 suggestionItems="{purchaseOrderHistory>/purchaseOrderHistoryNo}"
+                maxLength="10"
             >
                 <suggestionItems>
-                    <SuggestionItem
-                        text="{purchaseOrderNo}"
-                    />
+                    <SuggestionItem text="{purchaseOrderNo}" />
                 </suggestionItems>
             </Input>
         </VBox>
