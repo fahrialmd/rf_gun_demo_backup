@@ -4,12 +4,19 @@ sap.ui.define(
     "sap/m/MessageToast",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
+    "sap/ui/model/json/JSONModel",
   ],
-  (Controller, MessageToast, Filter, FilterOperator) => {
+  (Controller, MessageToast, Filter, FilterOperator, JSONModel) => {
     "use strict";
 
     return Controller.extend("rfgundemo.controller.MainScreen", {
       onInit() {
+        const oPurchaseOrderModel = new JSONModel({
+          purchaseOrderNumber: "",
+          items: [],
+        });
+
+        this.getOwnerComponent().setModel(oPurchaseOrderModel, "purchaseOrder");
         const oRouter = this.getOwnerComponent().getRouter();
         const oModel = this.getOwnerComponent().getModel();
         oRouter.attachRouteMatched(
@@ -58,6 +65,15 @@ sap.ui.define(
               if (aContexts.length > 0) {
                 // Purchase Order found
                 console.log("Purchase Order found:", aContexts[0].getObject());
+                const oPurchaseOrderModel = this.getOwnerComponent().getModel("purchaseOrder");
+                oPurchaseOrderModel.setProperty(
+                  "/purchaseOrderNumber", 
+                  sPurchaseOrder
+                );
+                oPurchaseOrderModel.setProperty(
+                  "/items",
+                  aContexts.map(context => context.getObject())
+                );
                 MessageToast.show(
                   `Purchase Order ${sPurchaseOrder} found. Navigating to detail.`
                 );
