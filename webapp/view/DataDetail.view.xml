@@ -16,13 +16,10 @@
         <List
             id="orderList"
             mode="MultiSelect"
-            items="{path: 'purchaseOrder>/items'}"
         >
             <headerToolbar>
                 <Toolbar>
-                    <Title
-                        text="{= 'Order Details for ' + ${purchaseOrder>/purchaseOrderNumber} }"
-                    />
+                    <Title id="orderDetailsTitle" />
                     <ToolbarSpacer />
                     <Button
                         id="saveAndPostButton"
@@ -33,7 +30,7 @@
                     />
                 </Toolbar>
             </headerToolbar>
-            <CustomListItem>
+            <CustomListItem id="orderListItem">
                 <HBox>
                     <VBox class="sapUiSmallMargin">
                         <Label
@@ -42,7 +39,7 @@
                         />
                         <Input
                             id="purchaseOrderItemNoInput"
-                            value="{purchaseOrder>PurchaseOrderItemNo}"
+                            value="{PurchaseOrderItemNo}"
                             editable="false"
                         />
                     </VBox>
@@ -53,7 +50,7 @@
                         />
                         <Input
                             id="materialInput"
-                            value="{purchaseOrder>Material}"
+                            value="{Material}"
                             editable="false"
                         />
                     </VBox>
@@ -64,7 +61,7 @@
                         />
                         <Input
                             id="materialDescriptionInput"
-                            value="{purchaseOrder>MaterialDescription}"
+                            value="{MaterialDescription}"
                             editable="false"
                         />
                     </VBox>
@@ -75,7 +72,7 @@
                         />
                         <Input
                             id="quantitySuggestInput"
-                            value="{purchaseOrder>QuantitySuggest}"
+                            value="{QuantitySuggest}"
                             editable="false"
                         />
                     </VBox>
@@ -96,7 +93,7 @@
                         />
                         <Input
                             id="plantInput"
-                            value="{purchaseOrder>Plant}"
+                            value="{Plant}"
                         />
                     </VBox>
                     <VBox class="sapUiSmallMargin">
@@ -106,7 +103,7 @@
                         />
                         <Input
                             id="storageLocationInput"
-                            value="{purchaseOrder>StorageLocation}"
+                            value="{StorageLocation}"
                         />
                     </VBox>
                     <VBox class="sapUiSmallMargin">

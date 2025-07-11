@@ -3,31 +3,21 @@ sap.ui.define(
     'sap/ui/core/mvc/Controller',
     'sap/m/MessageToast',
     'sap/ui/core/routing/History',
-    'sap/ui/model/json/JSONModel',
-    'sap/ui/model/Filter',
-    'sap/ui/model/FilterOperator',
   ],
-  
-  (Controller, MessageToast, History, JSONModel, Filter, FilterOperator) => {
+  function (Controller, MessageToast, History) {
     'use strict';
 
     return Controller.extend('rfgundemo.controller.DataDetail', {
-      onInit() {
-        const that = this;
-        const oRouter = this.getOwnerComponent().getRouter();
+      onInit: function () {
+        var that = this;
+        var oRouter = this.getOwnerComponent().getRouter();
 
         oRouter.attachRouteMatched(function (oEvent) {
-          const oArgs = oEvent.getParameter('arguments');
+          var oArgs = oEvent.getParameter('arguments');
           if (oArgs && oArgs.purchaseOrderNumber) {
             that.getView().setBusy(true);
-            that
-              ._loadPurchaseOrderData(oArgs.purchaseOrderNumber)
-              .then(() => {
-                that.getView().setBusy(false);
-              })
-              .catch(() => {
-                that.getView().setBusy(false);
-              });
+            that._loadPurchaseOrderData(oArgs.purchaseOrderNumber);
+            that._setOrderDetailsTitle(oArgs.purchaseOrderNumber);
           }
         });
 
@@ -35,24 +25,26 @@ sap.ui.define(
       },
 
       onNavBack: function () {
-        const oHistory = History.getInstance();
-        const sPreviousHash = oHistory.getPreviousHash();
+        var oHistory = History.getInstance();
+        var sPreviousHash = oHistory.getPreviousHash();
 
         if (sPreviousHash !== undefined) {
           window.history.go(-1);
         } else {
-          const oRouter = this.getOwnerComponent().getRouter();
+          var oRouter = this.getOwnerComponent().getRouter();
           oRouter.navTo('RouteMainScreen', {}, true);
         }
       },
 
-      onSaveAndPostButtonPress: function () {},
+      onSaveAndPostButtonPress: function () {
+        MessageToast.show('Save and Post logic to be implemented.');
+      },
 
       _attachInputEventDelegates: function () {
-        const oDataDetailPage = this.byId('dataDetailPage');
+        var oDataDetailPage = this.byId('dataDetailPage');
         if (oDataDetailPage) {
           oDataDetailPage.addEventDelegate({
-            onkeydown: oEvent => {
+            onkeydown: function (oEvent) {
               if (oEvent.key === 'F3') {
                 oEvent.preventDefault();
                 this.onNavBack();
@@ -60,71 +52,60 @@ sap.ui.define(
                 oEvent.preventDefault();
                 this.onSaveAndPostButtonPress();
               }
-            },
+            }.bind(this),
           });
         }
       },
 
       _loadPurchaseOrderData: function (sPurchaseOrder) {
-        const oPurchaseOrderModel =
-          this.getOwnerComponent().getModel('purchaseOrder');
+        var sPath =
+          "/ZR_RF_PO_ITEM_MAIN_BETA(P_PurchaseOrderNo='" +
+          sPurchaseOrder.trim() +
+          "')/Set";
 
-        return new Promise(resolve => {
-          if (!oPurchaseOrderModel) {
-            const oNewModel = new JSONModel({
-              purchaseOrderNumber: '',
-              items: [],
-            });
+        var oList = this.byId('orderList');
+        oList.bindItems({
+          path: sPath,
+          template: this.byId('orderList').getItems()[0].clone(),
+          events: {
+            dataReceived: function (oEvent) {
+              this.getView().setBusy(false);
+              if (!oEvent.getParameters().data) {
+                MessageToast.show(
+                  'No data found for Purchase Order: ' + sPurchaseOrder
+                );
+              } else {
+                // Use setTimeout to ensure the DOM is rendered
+                setTimeout(() => {
+                  var oFirstItem = oList.getItems()[0];
+                  if (oFirstItem) {
+                    // Assuming a standard way to find the input
+                    var oInput = oFirstItem
+                      .getContent()[0]
+                      ?.getItems()[4]
+                      ?.getItems()[1];
 
-            this.getOwnerComponent().setModel(oNewModel, 'purchaseOrder');
-            this._loadPurchaseOrderDataFromService(sPurchaseOrder).then(
-              resolve
-            );
-          } else {
-            const aItems = oPurchaseOrderModel.getProperty('/items') || [];
-            if (Array.isArray(aItems) && aItems.length > 0) {
-              this._bindDataToList(aItems);
-              resolve();
-            } else {
-              this._loadPurchaseOrderDataFromService(sPurchaseOrder).then(
-                resolve
-              );
-            }
-          }
+                    if (oInput) {
+                      oInput.focus();
+                    } else {
+                      console.warn('Quantity Receive Input not found');
+                    }
+                  } else {
+                    console.warn('First item not found');
+                  }
+                }, 100); // Adjust delay as needed
+              }
+            }.bind(this),
+            dataRequested: function () {},
+          },
         });
       },
 
-      _loadPurchaseOrderDataFromService: function (sPurchaseOrder) {
-        const oModel = this.getView().getModel();
-        const sPath = `/ZR_RF_PO_ITEM_MAIN_BETA(P_PurchaseOrderNo='${sPurchaseOrder.trim()}')/Set`;
-        const oListBinding = oModel.bindList(sPath);
-
-        return oListBinding.requestContexts().then(
-          function (aContexts) {
-            if (aContexts.length === 0) {
-              MessageToast.show(
-                `No data found for Purchase Order: ${sPurchaseOrder}`
-              );
-              return;
-            }
-
-            const oPurchaseOrderModel =
-              this.getOwnerComponent().getModel('purchaseOrder');
-            oPurchaseOrderModel.setProperty(
-              '/purchaseOrderNumber',
-              sPurchaseOrder
-            );
-            oPurchaseOrderModel.setProperty(
-              '/items',
-              aContexts.map(oContext => oContext.getObject())
-            );
-          }.bind(this),
-          function () {
-            MessageToast.show(
-              `Error retrieving data for Purchase Order: ${sPurchaseOrder}`
-            );
-          }.bind(this)
-        );
+      _setOrderDetailsTitle: function (sPurchaseOrder) {
+        var oTitle = this.byId('orderDetailsTitle');
+        if (oTitle) {
+          oTitle.setText('Order Details for ' + sPurchaseOrder);
+        }
       },
     });
   }
