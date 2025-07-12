@@ -338,6 +338,8 @@ sap.ui.define(
        * @private
        */
       _postToMigoAPI: function (aBAPIData) {
+        var oDeviceModel = this.getView().getModel('device');
+        var bIsPhone = oDeviceModel.getProperty('/system/phone');
         var oModel = this.getView().getModel();
         var body = {
           PurchaseOrder: aBAPIData[0].PurchaseOrder,
@@ -351,7 +353,11 @@ sap.ui.define(
           .created()
           .then(() => {
             MessageToast.show('Data posted successfully');
-            oModel.refresh();
+            if (bIsPhone) {
+              this.byId('orderCarousel').getBinding('pages').refresh();
+            } else {
+              this.byId('orderTable').getBinding('items').refresh();
+            }
           })
           .catch(oError => {
             MessageToast.show('Error posting data: ' + oError.message);
