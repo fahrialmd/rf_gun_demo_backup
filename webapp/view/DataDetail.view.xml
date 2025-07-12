@@ -144,10 +144,12 @@
                             value="{QuantitySuggest}"
                             editable="false"
                             width="100%"
+                            liveChange=".onLiveChangeCheckNumber"
                         />
                         <Input
                             value=""
                             width="100%"
+                            liveChange=".onLiveChangeCheckNumber"
                         />
                         <Input
                             value="{PurchaseOrderQuantityUnit}"
@@ -221,11 +223,15 @@
                                 <Input
                                     value="{QuantitySuggest}"
                                     editable="false"
+                                    liveChange=".onLiveChangeCheckNumber"
                                 />
                             </VBox>
                             <VBox>
                                 <Label text="Quantity Receive:" />
-                                <Input value="" />
+                                <Input
+                                    value=""
+                                    liveChange=".onLiveChangeCheckNumber"
+                                />
                             </VBox>
                         </HBox>
 

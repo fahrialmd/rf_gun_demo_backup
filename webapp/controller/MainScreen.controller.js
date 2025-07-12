@@ -37,6 +37,26 @@ sap.ui.define(
       },
 
       /**
+       * Handles the liveChange event for an Input control to ensure that only numeric
+       * values are input by the user.
+       *
+       * This function is triggered every time the input changes. It removes any
+       * non-numeric characters from the input and updates the input field with only numeric values.
+       *
+       * @param {sap.ui.base.Event} oEvent - The event object containing information about the liveChange event.
+       */
+      onLiveChangeCheckNumber: function (oEvent) {
+        var oInput = oEvent.getSource();
+        var sValue = oInput.getValue();
+
+        // Match only numbers
+        var sValidatedValue = sValue.replace(/[^0-9]/g, '');
+
+        // Set back only numeric value
+        oInput.setValue(sValidatedValue);
+      },
+
+      /**
        * Handler for the "Submit" button or F4 key.
        * Validates input and proceeds to check purchase order data.
        */
