@@ -371,12 +371,14 @@ sap.ui.define(
       onLiveChangeCheckNumber: function (oEvent) {
         var oInput = oEvent.getSource();
         // @ts-ignore
+        // @ts-ignore
         var sValue = oInput.getValue();
 
         // Match only numbers
         var sValidatedValue = sValue.replace(/[^0-9]/g, "");
 
         // Set back only numeric value
+        // @ts-ignore
         // @ts-ignore
         oInput.setValue(sValidatedValue);
       },
@@ -466,7 +468,7 @@ sap.ui.define(
         }
 
         // Submit data to backend
-        this._postToGMBAPI(aSelectedData);
+        this._postToGoodsMovementBAPI(aSelectedData);
       },
 
       /**
@@ -480,6 +482,7 @@ sap.ui.define(
         var oTable = this.byId("orderTable");
         // @ts-ignore
         var oTableItem = oButton.getParent(); // Get table row where the button is located
+        // @ts-ignore
         // @ts-ignore
         oTable.setSelectedItem(oTableItem, oButton.getPressed()); // Select or deselect row
       },
@@ -623,6 +626,7 @@ sap.ui.define(
        * @private
        */
 
+
       _attachInputEventDelegates: function () {
         var oDataDetailPage = this.byId("dataDetailPage");
         if (oDataDetailPage) {
@@ -763,37 +767,6 @@ sap.ui.define(
         }
       },
 
-      /**
-       * Posts collected item data to backend MIGO API.
-       */
-      // _postToGMBAPI: function (aBAPIData) {
-      //   var oDeviceModel = this.getView().getModel('device');
-      //   var bIsPhone = oDeviceModel.getProperty('/system/phone');
-      //   var oModel = this.getView().getModel();
-      //   var body = {
-      //     PurchaseOrder: aBAPIData[0].PurchaseOrder,
-      //     item: [...aBAPIData],
-      //   };
-
-      //   // Send data to backend service
-      //   oModel
-      //     .bindList('/ZC_RFH_MIGO_DEMO')
-      //     .create(body)
-      //     .created()
-      //     .then(() => {
-      //       MessageToast.show('Data posted successfully');
-      //       if (bIsPhone) {
-      //         this.byId('orderCarousel').getBinding('pages').refresh();
-      //       } else {
-      //         this.byId('orderTable').getBinding('items').refresh();
-      //       }
-      //     })
-      //     .catch(oError => {
-      //       MessageToast.show('Error posting data: ' + oError.message);
-      //       oModel.refresh();
-      //     });
-      // },
-
       // Add the missing _extractStatusCode method first:
       _extractStatusCode: function (oError) {
         // Try different ways to extract status code
@@ -826,15 +799,16 @@ sap.ui.define(
         return 0; // Unknown status
       },
 
-      // Fixed _postToGMBAPI method:
-      _postToGMBAPI: function (aBAPIData) {
+      _postToGoodsMovementBAPI: function (aBAPIData) {
         var that = this;
         var oDeviceModel = this.getView().getModel("device");
         var bIsPhone = oDeviceModel.getProperty("/system/phone");
         var oModel = this.getView().getModel();
+
+        // Your existing body structure works perfectly!
         var body = {
           PurchaseOrder: aBAPIData[0].PurchaseOrder,
-          item: [...aBAPIData],
+          item: [...aBAPIData],  // This is already an array of objects
         };
 
         // Clear previous messages before new API call
@@ -843,132 +817,127 @@ sap.ui.define(
         // Show loading indicator
         this.getView().setBusy(true);
 
-        // Send data to backend service
-        var oListBinding = oModel.bindList("/ZC_RFH_MIGO_DEMO");
-        var oContext = oListBinding.create(body);
+        // Clear previous messages
+        this._MessageManager.removeAllMessages();
 
-        oContext
-          .created()
-          .then(function (oCreatedContext) {
-            that.getView().setBusy(false);
+        // Show loading indicator
+        this.getView().setBusy(true);
 
-            // Success - HTTP 200/201
-            that._addMessage(
-              "Data posted successfully",
-              MessageType.Success,
-              "HTTP 201 - Created",
-              "Purchase Order " +
-                body.PurchaseOrder +
-                " has been processed successfully."
-            );
+        try {
+          // Call your postBAPI action
+          var oAction = oModel.bindContext(
+            "/ZR_RFH_MIGO_DEMO/com.sap.gateway.srvd_a2x.zui_rf_po_item.v0001.postBAPI(...)",
+            null // Unbound static action
+          );
 
-            MessageToast.show("Data posted successfully");
+          // Set parameters - pass array directly (no JSON conversion!)
+          oAction.setParameter("PurchaseOrder", body.PurchaseOrder);
+          oAction.setParameter("item", JSON.stringify(body.item)); // Pass the array directly
 
-            // Refresh the data - THIS SHOULD BE HERE IN SUCCESS
-            if (bIsPhone) {
-              that.byId("orderCarousel").getBinding("pages").refresh();
-            } else {
-              that.byId("orderTable").getBinding("items").refresh();
-            }
+          // Execute the action
+          oAction.execute()
+            .then(function () {
+              that.getView().setBusy(false);
+
+              // Success
+              that._addMessage(
+                "Data posted successfully",
+                MessageType.Success,
+                "Document Created",
+                "Purchase Order " + body.PurchaseOrder + " has been processed successfully."
+              );
+
+              // Refresh the data
+              if (bIsPhone) {
+                that.byId('orderCarousel').getBinding('pages').refresh();
+              } else {
+                that.byId('orderTable').getBinding('items').refresh();
+              }
+
+            })
+            .catch(function (oError) {
+              that.getView().setBusy(false);
+
+              // Error handling
+              var sErrorMessage = that._getErrorMessage(oError);
+              var iStatusCode = that._extractStatusCode(oError);
+              var sHttpStatusText = that._getHttpStatusText(iStatusCode);
+
+              that._addMessage(
+                "Error posting data",
+                MessageType.Error,
+                sHttpStatusText || "Processing Error",
+                sErrorMessage || "An unexpected error occurred during processing."
+              );
+
+              // Refresh model on error
+              oModel.refresh();
+            }).finally(() => { that._resetAfterSuccessfulPost(); });
+
+        } catch (oError) {
+          this.getView().setBusy(false);
+          this._addMessage(
+            "Error setting up processing",
+            MessageType.Error,
+            "Setup Error",
+            oError.message || "Failed to initialize processing."
+          );
+        }
+      },
+
+      // Helper method to add API messages to MessagePopover
+      _addMessage: function (sMessage, sType, sAdditionalText, sDescription) {
+        this._MessageManager.addMessages(
+          new Message({
+            message: sMessage,
+            type: sType,
+            additionalText: sAdditionalText,
+            description: sDescription,
+            processor: this.getView().getModel(),
           })
-          .catch(function (oError) {
-            that.getView().setBusy(false);
+        );
+      },
 
-            // Extract HTTP status code and handle different error scenarios
-            var iStatusCode = that._extractStatusCode(oError);
-            var sErrorMessage = that._getErrorMessage(oError);
-            var sHttpStatusText = that._getHttpStatusText(iStatusCode);
+      // Helper method to extract error message
+      _getErrorMessage: function (oError) {
+        if (oError && oError.message) {
+          return oError.message;
+        }
 
-            // Add message based on HTTP status code
-            switch (iStatusCode) {
-              case 400:
-                that._addMessage(
-                  "Bad Request - Invalid data provided",
-                  MessageType.Error,
-                  "HTTP 400 - Bad Request",
-                  "Please check your input data. " + sErrorMessage
-                );
-                break;
+        if (oError && oError.error && oError.error.message) {
+          return oError.error.message;
+        }
 
-              case 401:
-                that._addMessage(
-                  "Authentication required",
-                  MessageType.Error,
-                  "HTTP 401 - Unauthorized",
-                  "Please check your login credentials. " + sErrorMessage
-                );
-                break;
-
-              case 403:
-                that._addMessage(
-                  "Access forbidden",
-                  MessageType.Error,
-                  "HTTP 403 - Forbidden",
-                  "You don't have permission to perform this operation. " +
-                    sErrorMessage
-                );
-                break;
-
-              case 404:
-                that._addMessage(
-                  "Service not found",
-                  MessageType.Error,
-                  "HTTP 404 - Not Found",
-                  "The requested service endpoint was not found. " +
-                    sErrorMessage
-                );
-                break;
-
-              case 422:
-                that._addMessage(
-                  "Validation failed",
-                  MessageType.Warning,
-                  "HTTP 422 - Unprocessable Entity",
-                  "Data validation failed. Please check your entries. " +
-                    sErrorMessage
-                );
-                break;
-
-              case 500:
-                that._addMessage(
-                  "Internal server error",
-                  MessageType.Error,
-                  "HTTP 500 - Internal Server Error",
-                  "An error occurred on the server. Please try again later. " +
-                    sErrorMessage
-                );
-                break;
-
-              case 502:
-                that._addMessage(
-                  "Bad gateway",
-                  MessageType.Error,
-                  "HTTP 502 - Bad Gateway",
-                  "Gateway error occurred. Please try again. " + sErrorMessage
-                );
-                break;
-
-              case 503:
-                that._addMessage(
-                  "Service unavailable",
-                  MessageType.Warning,
-                  "HTTP 503 - Service Unavailable",
-                  "Service is temporarily unavailable. Please try again later. " +
-                    sErrorMessage
-                );
-                break;
-
-              default:
-                that._addMessage(
-                  "Error posting data",
-                  MessageType.Error,
-                  sHttpStatusText || "HTTP " + iStatusCode,
-                  sErrorMessage || "An unexpected error occurred."
-                );
+        if (oError && oError.responseText) {
+          try {
+            var oParsed = JSON.parse(oError.responseText);
+            if (oParsed.error && oParsed.error.message) {
+              return oParsed.error.message;
             }
-            // Only refresh model on error, not the data binding
-            oModel.refresh();
-          });
+          } catch (e) {
+            return oError.responseText;
+          }
+        }
+
+        return "Unknown error occurred";
+      },
+
+      // Helper method to get HTTP status text
+      _getHttpStatusText: function (iStatusCode) {
+        var mStatusTexts = {
+          200: "HTTP 200 - OK",
+          201: "HTTP 201 - Created",
+          400: "HTTP 400 - Bad Request",
+          401: "HTTP 401 - Unauthorized",
+          403: "HTTP 403 - Forbidden",
+          404: "HTTP 404 - Not Found",
+          422: "HTTP 422 - Unprocessable Entity",
+          500: "HTTP 500 - Internal Server Error",
+          502: "HTTP 502 - Bad Gateway",
+          503: "HTTP 503 - Service Unavailable",
+        };
+
+        return mStatusTexts[iStatusCode] || "HTTP " + iStatusCode;
       },
 
       // Helper method to add API messages to MessagePopover
@@ -1039,8 +1008,8 @@ sap.ui.define(
         );
 
         if (iCurrentIndex < aPages.length - 1) {
-          var sNextPageId = aPages[iCurrentIndex + 1].getId();
-          oCarousel.setActivePage(sNextPageId);
+          var oNextPageId = aPages[iCurrentIndex + 1].getId();
+          oCarousel.setActivePage(oNextPageId);
         }
       },
 
