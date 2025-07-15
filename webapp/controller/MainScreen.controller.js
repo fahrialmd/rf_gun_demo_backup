@@ -27,6 +27,7 @@ sap.ui.define(
 
         // Refresh model data every time this route is matched
         oRouter.attachRouteMatched(
+          // @ts-ignore
           function (oEvent) {
             oModel.refresh();
           }.bind(this)
@@ -47,12 +48,14 @@ sap.ui.define(
        */
       onLiveChangeCheckNumber: function (oEvent) {
         var oInput = oEvent.getSource();
+        // @ts-ignore
         var sValue = oInput.getValue();
 
         // Match only numbers
         var sValidatedValue = sValue.replace(/[^0-9]/g, '');
 
         // Set back only numeric value
+        // @ts-ignore
         oInput.setValue(sValidatedValue);
       },
 
@@ -114,7 +117,7 @@ sap.ui.define(
         const oModel = this.getView().getModel();
 
         // Backend entity path to check PO data
-        const sPath = '/ZR_RF_PO_ITEM_MAIN_BETA';
+        const sPath = '/ZR_RF_PO_ITEM_MAIN';
 
         // Create filter to search for matching PO number
         const aFilters = [
