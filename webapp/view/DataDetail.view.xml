@@ -56,7 +56,6 @@ buttons.
             id="orderTable"
             mode="MultiSelect"
             items="{path: '/ZR_RF_PO_ITEM_MAIN'}"
-            items="{path: '/ZR_RF_PO_ITEM_MAIN'}"
             inset="false"
             class="sapUiResponsiveContentPadding"
             visible="{= !${device>/system/phone} }"
@@ -203,8 +202,6 @@ buttons.
                             width="100%"
                             showValueHelp="true"
                             valueHelpRequest="onPlantVHRequest"
-                            showValueHelp="true"
-                            valueHelpRequest="onPlantVHRequest"
                         />
                         <Input
                             value="{StorageLocation}"
@@ -250,7 +247,6 @@ buttons.
         <Carousel
             id="orderCarousel"
             pages="{path: '/ZR_RF_PO_ITEM_MAIN'}"
-            pages="{path: '/ZR_RF_PO_ITEM_MAIN'}"
             visible="{device>/system/phone}"
             arrowsPlacement="PageIndicator"
             pageChanged=".onCarouselPageChanged"
@@ -279,7 +275,6 @@ buttons.
                                     editable="false"
                                 />
                             </VBox>
-                            <VBox visible="false">
                             <VBox visible="false">
                                 <Label text="Material Desc:" />
                                 <Input
